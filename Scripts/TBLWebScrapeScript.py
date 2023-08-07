@@ -13,12 +13,15 @@ FOUNDED = 1993
 TEAM = 'TBL'
 
 # Used to get the current year
-today = dt.datetime.now()
+TODAY = dt.datetime.now()
+
+# Used to define the output path
+PATH = r"C:\Users\braed\Desktop\TBL Hockey Analysis\Raw Data\player_data.xlsx"
 
 def scrape_player_data(year):
     # If the year being tried is the current year the url needs to default because of the website structure
     url = (lambda year: f"https://www.hockey-reference.com/teams/{TEAM}/{year}.html"
-           if year != today.year else f"https://www.hockey-reference.com/teams/{TEAM}/")(year)
+           if year != TODAY.year else f"https://www.hockey-reference.com/teams/{TEAM}/")(year)
     response = rq.get(url)
     html_content = response.content
 
@@ -49,10 +52,10 @@ def scrape_player_data(year):
     return df
 
 # Generates a list from the year they were founded to the current year.
-years = [str(year) for year in range(FOUNDED, today.year + 1)]
+years = [str(year) for year in range(FOUNDED, TODAY.year + 1)]
 
 # Creates the Excel Writer object
-excel_file = pd.ExcelWriter('player_data.xlsx', engine='xlsxwriter')
+excel_file = pd.ExcelWriter(PATH, engine='xlsxwriter')
 
 for year in years:
     df = scrape_player_data(year)
@@ -61,4 +64,4 @@ for year in years:
 excel_file.close()
 
 # Confirms completion of the web scrape
-print("Player data has been saved to 'player_data.xlsx'.")
+print(f"Player data has been saved to '{PATH}'.")
